@@ -1,0 +1,6 @@
+.git
+**/node_modules
+my-app/dist
+backend/*.db
+backend/server
+backend/server.exe

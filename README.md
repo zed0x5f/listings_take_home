@@ -63,6 +63,18 @@ npm run build            # type-checks (tsc) and produces dist/
 - *"Port 5173 is in use".* Vite falls back to the next free port; use the URL it prints.
 - *`go: command not found`.* Add Go's `bin` folder to `PATH` (on Windows the default is `C:\Program Files\Go\bin`).
 
+## Deploying (Render)
+
+The [Dockerfile](Dockerfile) builds one image: the Go server serves the API under `/api/` and the built UI at `/`
+(the `-static` flag), and it listens on `$PORT`. The DB is in memory and re-seeded from `sample_listings.json`
+on every start, so no disk is needed.
+
+1. In the [Render dashboard](https://dashboard.render.com), choose **New → Blueprint** and pick this repo.
+2. Render reads [render.yaml](render.yaml) (free plan, health check `/api/health`) and builds the Dockerfile.
+
+The free plan sleeps after ~15 minutes idle, so the first request after that takes a little longer.
+Locally: `docker build -t listings . && docker run -p 8080:8080 listings`, then open http://localhost:8080.
+
 SQLite driver: `modernc.org/sqlite` (pure Go) behind `sqlx`. I chose it over `mattn/go-sqlite3`
 because it needs no cgo/C toolchain, so `go run` works on a fresh machine, including Windows.
 

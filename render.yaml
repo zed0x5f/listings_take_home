@@ -1,0 +1,10 @@
+# Render Blueprint: New → Blueprint in the Render dashboard, then pick this repo.
+services:
+  - type: web
+    name: listing-search
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    autoDeploy: true

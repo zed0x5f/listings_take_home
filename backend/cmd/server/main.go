@@ -6,6 +6,7 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/tcap/listings/internal/api"
@@ -14,9 +15,14 @@ import (
 )
 
 func main() {
-	addr := flag.String("addr", ":8080", "listen address")
+	defaultAddr := ":8080"
+	if port := os.Getenv("PORT"); port != "" { // set by hosts like Render
+		defaultAddr = ":" + port
+	}
+	addr := flag.String("addr", defaultAddr, "listen address ($PORT overrides the default)")
 	dsn := flag.String("db", "listings.db", `SQLite database path (":memory:" for ephemeral)`)
 	seed := flag.String("seed", "../sample_listings.json", "JSON file to load on startup (empty to skip)")
+	static := flag.String("static", "", "directory of built frontend files to serve at / (empty to serve the API only)")
 	flag.Parse()
 
 	st, err := store.Open(*dsn)
@@ -34,9 +40,18 @@ func main() {
 	}
 
 	h := api.NewHandler(search.NewService(st, nil))
+	handler := h.Routes()
+	if *static != "" {
+		// Serve the UI and the API from one origin, so the frontend's relative /api calls just work.
+		mux := http.NewServeMux()
+		mux.Handle("/api/", handler)
+		mux.Handle("/", http.FileServer(http.Dir(*static)))
+		handler = mux
+		log.Printf("serving frontend from %s", *static)
+	}
 	srv := &http.Server{
 		Addr:              *addr,
-		Handler:           h.Routes(),
+		Handler:           handler,
 		ReadHeaderTimeout: 5 * time.Second,
 	}
 	log.Printf("listening on %s", *addr)
