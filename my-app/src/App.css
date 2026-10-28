@@ -1,0 +1,91 @@
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 16px;
+  font-family: system-ui, sans-serif;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field input[aria-invalid] {
+  border-color: #c00;
+  outline-color: #c00;
+}
+
+.field-error,
+.error {
+  color: #c00;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  align-items: end;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.pager button[aria-current='page'] {
+  font-weight: bold;
+}
+
+.status {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.85em;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.status-active {
+  background: #e3f5e1;
+  color: #1d6b16;
+}
+
+.status-pending {
+  background: #fff3cd;
+  color: #7a5b00;
+}
+
+.status-sold {
+  background: #eee;
+  color: #555;
+}
+
+.description {
+  min-width: 220px;
+  font-size: 0.9em;
+}
